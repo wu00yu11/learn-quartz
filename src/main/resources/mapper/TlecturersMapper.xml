@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.learn.quartz.dao.TlecturersMapper">
+  <resultMap id="BaseResultMap" type="com.learn.quartz.model.Tlecturers">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="is_talkable" jdbcType="BIT" property="is_talkable" />
+    <result column="is_blocked" jdbcType="BIT" property="is_blocked" />
+    <result column="is_charged" jdbcType="BIT" property="is_charged" />
+    <result column="is_coworker" jdbcType="BIT" property="is_coworker" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="created_at" />
+    <result column="updated_at" jdbcType="TIMESTAMP" property="updated_at" />
+    <result column="relation" jdbcType="INTEGER" property="relation" />
+    <result column="all_talk_count" jdbcType="INTEGER" property="all_talk_count" />
+    <result column="day_talk_count" jdbcType="DECIMAL" property="day_talk_count" />
+    <result column="last_talk_at" jdbcType="TIMESTAMP" property="last_talk_at" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="invite_code" jdbcType="VARCHAR" property="invite_code" />
+    <result column="is_ztc" jdbcType="BIT" property="is_ztc" />
+    <result column="has_treaty" jdbcType="BIT" property="has_treaty" />
+    <result column="realname" jdbcType="VARCHAR" property="realname" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="id_code" jdbcType="VARCHAR" property="id_code" />
+    <result column="spn" jdbcType="INTEGER" property="spn" />
+    <result column="logname" jdbcType="VARCHAR" property="logname" />
+    <result column="qq" jdbcType="VARCHAR" property="qq" />
+    <result column="qualification" jdbcType="VARCHAR" property="qualification" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="is_online" jdbcType="BIT" property="is_online" />
+    <result column="top_limit" jdbcType="INTEGER" property="top_limit" />
+    <result column="avatar" jdbcType="VARCHAR" property="avatar" />
+    <result column="last_feed_id" jdbcType="INTEGER" property="last_feed_id" />
+    <result column="last_feed_at" jdbcType="TIMESTAMP" property="last_feed_at" />
+    <result column="is_office" jdbcType="BIT" property="is_office" />
+    <result column="fans_count" jdbcType="INTEGER" property="fans_count" />
+    <result column="flag" jdbcType="INTEGER" property="flag" />
+    <result column="is_auto_reply" jdbcType="BIT" property="is_auto_reply" />
+    <result column="admin_forbidden_auto_reply" jdbcType="BIT" property="admin_forbidden_auto_reply" />
+    <result column="yesterday_view_count" jdbcType="INTEGER" property="yesterday_view_count" />
+    <result column="is_internal" jdbcType="BIT" property="is_internal" />
+    <result column="is_jtg" jdbcType="BIT" property="is_jtg" />
+    <result column="pay_channel" jdbcType="INTEGER" property="pay_channel" />
+    <result column="popularity" jdbcType="INTEGER" property="popularity" />
+    <result column="week_view_count" jdbcType="INTEGER" property="week_view_count" />
+    <result column="week_like_count" jdbcType="INTEGER" property="week_like_count" />
+    <result column="practice_no" jdbcType="VARCHAR" property="practice_no" />
+    <result column="go_index_num" jdbcType="INTEGER" property="go_index_num" />
+    <result column="is_xld" jdbcType="BIT" property="is_xld" />
+    <result column="invester_name" jdbcType="VARCHAR" property="invester_name" />
+    <result column="allow_charge_video" jdbcType="BIT" property="allow_charge_video" />
+    <result column="allow_live_video" jdbcType="BIT" property="allow_live_video" />
+    <result column="poster" jdbcType="VARCHAR" property="poster" />
+    <result column="sharing_rate" jdbcType="DECIMAL" property="sharing_rate" />
+    <result column="is_consulting_stock" jdbcType="BIT" property="is_consulting_stock" />
+    <result column="smart_view_count" jdbcType="INTEGER" property="smart_view_count" />
+    <result column="vip_push_count" jdbcType="INTEGER" property="vip_push_count" />
+    <result column="common_push_count" jdbcType="INTEGER" property="common_push_count" />
+    <result column="push_limit" jdbcType="INTEGER" property="push_limit" />
+    <result column="lecturer_uuid" jdbcType="VARCHAR" property="lecturer_uuid" />
+    <result column="intro" jdbcType="LONGVARCHAR" property="intro" />
+    <result column="remark" jdbcType="LONGVARCHAR" property="remark" />
+    <result column="my_signature" jdbcType="LONGVARCHAR" property="my_signature" />
+    <result column="auto_reply" jdbcType="LONGVARCHAR" property="auto_reply" />
+  </resultMap>
+
+  <select id="lecturerCountData" resultType="map">
+    SELECT
+    ls.`name` as lecturername,
+		DATE_FORMAT(DATE_ADD(ls.created_at , INTERVAL 8 HOUR),'%Y-%m-%d %H:%i:%s') as created_at,
+    (CASE ls.relation WHEN 0 THEN '代发' WHEN 1 THEN '收费合作' WHEN 2 THEN '免费合作' WHEN 3 THEN '官方账号' END) as relation,
+    IF(ls.is_online = 0 , '否' , '是') as is_online,
+    IF(ls.is_internal = 0 , '否' , '是') as is_internal,
+    IF(ls.is_xld = 0 , '否' , '是') as is_xld,
+    IF(ls.flag = 0 , '否' , '是') as flag,
+    fll.attentionTotalCount,
+    flll.yesTotalCount,
+    IFNULL(lfs.feed_num , 0) as yesTalkCount,
+    IFNULL(lfs.feedLikeCount , 0) as feedLikeCount,
+    IFNULL(lfs.feedViewCount , 0) as feedViewCount,
+		DATE_FORMAT(pss.lastTalkTime,'%Y-%m-%d %H:%i:%s')as lastTalkTime,
+    pss.chenmoDays,
+    ls.invite_code as invite_code,
+    pip.`name` as productname,
+    pip.price as productprice,
+    pscoss.yesTotlaOrderCount,
+    pcoo.pcoTotalcount
+    FROM
+    lecturers ls
+    LEFT JOIN(
+    SELECT
+    ps.lecturer_id ,
+    count(0) AS yesTalkCount
+    FROM
+    pub_messages ps
+    WHERE
+    ps.mtype = 1
+    AND ps.lecturer_id IS NOT NULL
+    AND DATE_ADD(ps.created_at , INTERVAL 8 HOUR) >= DATE_SUB(NOW() , INTERVAL 1 DAY)
+    AND DATE_ADD(ps.created_at , INTERVAL 8 HOUR) &lt;= NOW()
+    GROUP BY
+    lecturer_id
+    ) pmsg ON ls.id = pmsg.lecturer_id
+    LEFT JOIN(
+    SELECT
+    lf.lecturer_id ,COUNT(0) AS feed_num,
+    sum(lf.real_like_count) AS feedLikeCount ,
+    sum(lf.real_view_count) AS feedViewCount
+    FROM
+    lecturer_feeds lf
+    WHERE
+    DATE_ADD(lf.published_at , INTERVAL 8 HOUR) >= DATE_SUB(NOW() , INTERVAL 1 DAY)
+    AND DATE_ADD(lf.published_at , INTERVAL 8 HOUR) &lt;= NOW()
+    GROUP BY
+    lf.lecturer_id
+    ) lfs ON lfs.lecturer_id = ls.id
+    LEFT JOIN pub_live_products pls ON pls.lecturer_id = ls.id AND pls.is_default_product=1
+    LEFT JOIN pub_invest_products pip ON pls.invest_product_id = pip.id
+    LEFT JOIN(
+    SELECT
+    fl.lecturer_id ,
+    count(fl.id) AS attentionTotalCount
+    FROM
+    follow_lecturers fl
+    WHERE
+    fl.is_valid = 1
+    GROUP BY
+    fl.lecturer_id
+    ) fll ON fll.lecturer_id = ls.id
+    LEFT JOIN(
+    SELECT
+    flss.lecturer_id,
+    COUNT(flss.id) AS yesTotalCount
+    FROM
+    follow_lecturers flss
+    WHERE
+    flss.is_valid = 1
+    AND DATE_ADD(flss.created_at , INTERVAL 8 HOUR) >= DATE_SUB(NOW() , INTERVAL 1 DAY)
+    AND DATE_ADD(flss.created_at , INTERVAL 8 HOUR) &lt;=  NOW()
+    GROUP BY
+    flss.lecturer_id
+    ) flll ON flll.lecturer_id = ls.id
+    LEFT JOIN(
+    SELECT
+        lfsa.lecturer_id,
+		DATE_ADD(max(lfsa.created_at),INTERVAL 8 HOUR) as lastTalkTime,
+		DATEDIFF(NOW(),MAX(DATE_ADD(lfsa.created_at,INTERVAL 8 HOUR))) as chenmoDays
+    FROM
+    lecturer_feeds lfsa
+	GROUP BY lfsa.lecturer_id
+	order by MAX(DATE_ADD(lfsa.created_at,INTERVAL 8 HOUR)) desc
+    ) pss ON pss.lecturer_id = ls.id
+    LEFT JOIN(
+    SELECT
+    pco.lecturer_id ,
+    count(id) AS pcoTotalcount
+    FROM
+    pub_cash_orders pco
+    WHERE
+    pco.`status` = 1 AND DATE_ADD(pco.pay_time,INTERVAL 8 HOUR) &lt;=NOW()
+    GROUP BY
+    pco.lecturer_id
+    ) pcoo ON pcoo.lecturer_id = ls.id
+    LEFT JOIN(
+    SELECT
+    pcos.lecturer_id ,
+    count(id) as yesTotlaOrderCount
+    FROM
+    pub_cash_orders pcos
+    WHERE
+    pcos. STATUS = 1
+    AND DATE_ADD(pcos.pay_time , INTERVAL 8 HOUR) >= DATE_SUB(NOW() , INTERVAL 1 DAY)
+    AND DATE_ADD(pcos.pay_time , INTERVAL 8 HOUR) &lt;=  NOW()
+    GROUP BY
+    pcos.lecturer_id
+    ) pscoss on pscoss.lecturer_id = ls.id
+  </select>
+<select id="queryBigVLecturers" resultType="map">
+  SELECT cast(pln.pub_main_id AS char) AS bigVid,GROUP_CONCAT(pln.lecturer_id) AS lecturer_ids
+FROM pub_lecturers_nexus pln
+INNER JOIN pub_influencer pi ON pi.id=pln.pub_main_id AND pi.is_blocked=0
+WHERE pln.type=0 AND pln.is_blocked=0
+GROUP BY pln.pub_main_id
+</select>
+</mapper>
